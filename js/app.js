@@ -567,25 +567,17 @@ function renderInsights() {
   // Closest matches
 
 
-  // Highest turns — best single-leg PPT per player, top 5
-  const seenPPT = new Set();
-  const bestPPT = (DATA.top_ppt || []).filter(l => {
-    if (seenPPT.has(l.player_id)) return false;
-    seenPPT.add(l.player_id); return true;
-  }).slice(0,5);
-  $('#insight-top-ppt').innerHTML = bestPPT.map((l,i) => {
-    const isYou = l.player_id === YOU_ID;
-    const name = DATA.players.find(p=>p.id===l.player_id)?.name.split(', ')[0] || '?';
-    const opp  = DATA.players.find(p=>p.id===l.opponent_id)?.name.split(', ')[0] || '?';
+  // Most 140+ turns — season totals per player, top 5
+  $('#insight-top-ppt').innerHTML = (DATA.turns_140 || []).filter(r => r.count_140 > 0).slice(0,5).map((r,i) => {
+    const isYou = r.player_id === YOU_ID;
+    const name = DATA.players.find(p=>p.id===r.player_id)?.name.split(', ')[0] || '?';
+    const s180 = r.count_180 > 0 ? ` <span style="color:var(--muted)">(${r.count_180} × 180)</span>` : '';
     return `<div class="insight-item">
       <div class="insight-num">${i+1}</div>
       <div class="insight-text">
-        <span class="hl" style="font-size:14px;font-weight:800">${l.ppt.toFixed(1)}</span>
-        <span style="color:var(--muted)"> PPT</span>
-        — <span class="${isYou?'hl-blue':'hl'}">${name}</span>
-        vs ${opp}
-        · <span style="color:var(--muted)">${l.pretty}</span>
-        · <a href="https://recap.dartconnect.com/matches/${l.dc_id}" target="_blank">recap↗</a>
+        <span class="${isYou?'hl-blue':'hl'}">${name}</span>
+        — <span class="hl" style="font-size:14px;font-weight:800">${r.count_140}</span>
+        <span style="color:var(--muted)"> turns of 140+</span>${s180}
       </div>
     </div>`;
   }).join('');
