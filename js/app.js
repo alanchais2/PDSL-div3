@@ -449,7 +449,7 @@ function renderInsights() {
   // Title race
   const sorted = [...DATA.players].sort((a,b) => b.points-a.points);
   const leader = sorted[0];
-  $('#insight-title-race').innerHTML = sorted.slice(0,6).map((p,i) => {
+  $('#insight-title-race').innerHTML = sorted.slice(0,5).map((p,i) => {
     const gap = leader.points - p.points;
     const isYou = p.id === YOU_ID;
     return `<div class="insight-item">
@@ -550,7 +550,7 @@ function renderInsights() {
     
   $('#insight-overperf').innerHTML = [
     `<div style="color:var(--muted);font-size:11px;padding:10px 0 6px">Season PPR vs per-match avg PPR (match data may differ from season aggregation)</div>`,
-    ...overperf.slice(0,6).map((p,i) => {
+    ...overperf.slice(0,5).map((p,i) => {
       const isYou = p.id === YOU_ID;
       const delta = parseFloat(p.delta);
       return `<div class="insight-item">
@@ -567,8 +567,13 @@ function renderInsights() {
   // Closest matches
 
 
-  // Highest turns — best single-leg PPT (points per turn)
-  $('#insight-top-ppt').innerHTML = (DATA.top_ppt || []).slice(0,8).map((l,i) => {
+  // Highest turns — best single-leg PPT per player, top 5
+  const seenPPT = new Set();
+  const bestPPT = (DATA.top_ppt || []).filter(l => {
+    if (seenPPT.has(l.player_id)) return false;
+    seenPPT.add(l.player_id); return true;
+  }).slice(0,5);
+  $('#insight-top-ppt').innerHTML = bestPPT.map((l,i) => {
     const isYou = l.player_id === YOU_ID;
     const name = DATA.players.find(p=>p.id===l.player_id)?.name.split(', ')[0] || '?';
     const opp  = DATA.players.find(p=>p.id===l.opponent_id)?.name.split(', ')[0] || '?';
@@ -586,7 +591,7 @@ function renderInsights() {
   }).join('');
 
   // Checkout efficiency
-  $('#insight-checkout-eff').innerHTML = (DATA.checkout_efficiency || []).slice(0,8).map((s,i) => {
+  $('#insight-checkout-eff').innerHTML = (DATA.checkout_efficiency || []).slice(0,5).map((s,i) => {
     const isYou = s.player_id === YOU_ID;
     const barW = Math.round(s.efficiency);
     return `<div class="insight-item">
@@ -602,7 +607,7 @@ function renderInsights() {
     </div>`;
   }).join('');
   // Highest checkouts — top 8 individual checkout scores
-  $('#insight-checkouts').innerHTML = DATA.top_checkouts.slice(0,8).map((c,i) => {
+  $('#insight-checkouts').innerHTML = DATA.top_checkouts.slice(0,5).map((c,i) => {
     const isYou = c.player_id === YOU_ID;
     const opp = DATA.players.find(p => p.id === c.opponent_id);
     const oppName = opp ? opp.name.split(', ')[0] : '?';
@@ -619,7 +624,7 @@ function renderInsights() {
   }).join('');
 
   // Comeback wins
-  $('#insight-comebacks').innerHTML = DATA.comebacks.slice(0,6).map((c,i) => {
+  $('#insight-comebacks').innerHTML = DATA.comebacks.slice(0,5).map((c,i) => {
     const wIsYou = c.winner_id === YOU_ID, lIsYou = c.loser_id === YOU_ID;
     return `<div class="insight-item">
       <div class="insight-num">${i+1}</div>
@@ -637,7 +642,7 @@ function renderInsights() {
 
   // Best checkout average (min 50 checkouts)
   const coStats = (DATA.checkout_stats || []).filter(s => s.count >= 50).sort((a,b) => b.avg - a.avg);
-  $('#insight-checkout-avg').innerHTML = coStats.slice(0,6).map((s,i) => {
+  $('#insight-checkout-avg').innerHTML = coStats.slice(0,5).map((s,i) => {
     const isYou = s.player_id === YOU_ID;
     return `<div class="insight-item">
       <div class="insight-num">${i+1}</div>
