@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMSL Division 3 — Winter 2026 Stats</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <h1>&#127919; SMSL Division 3</h1>
+    <div class="meta">Sissy McGinty's Singles League · Winter 2026 · as of May 21, 2026</div>
+  </div>
+</header>
+<div class="tabs">
+  <div class="tab" data-tab="standings">Standings</div>
+  <div class="tab" data-tab="players">Players</div>
+  <div class="tab" data-tab="h2h">Head-to-Head</div>
+  <div class="tab" data-tab="matchlog">Match Log</div>
+  <div class="tab" data-tab="leaderboards">Leaderboards</div>
+  <div class="tab" data-tab="insights">Insights</div>
+</div>
+<div class="main">
+
+<!-- STANDINGS -->
+<div class="panel" id="panel-standings">
+  <div class="card">
+    <div class="card-title">Division 3 Standings</div>
+    <table id="standings-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Player</th>
+          <th class="num">W</th>
+          <th class="num">L</th>
+          <th class="num">Pts</th>
+          <th class="num">PPR</th>
+          <th class="num">Leg%</th>
+          <th class="num">Legs W/P</th>
+          <th>Form</th>
+          <th class="num">Streak</th>
+        </tr>
+      </thead>
+      <tbody id="standings-tbody"></tbody>
+    </table>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">PPR vs Rank</div>
+      <div class="chart-wrap"><canvas id="ppr-rank-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Win Rate vs Leg Win %</div>
+      <div class="chart-wrap"><canvas id="win-leg-chart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYERS -->
+<div class="panel" id="panel-players">
+  <div class="card">
+    <div class="player-select-wrap" id="player-buttons"></div>
+    <div id="player-profile" style="padding:20px;color:var(--muted);text-align:center;">Select a player above</div>
+  </div>
+</div>
+
+<!-- H2H -->
+<div class="panel" id="panel-h2h">
+  <div class="card">
+    <div class="card-title">Head-to-Head Results — hover/tap cell for details</div>
+    <div class="matrix-wrap" style="padding:16px;">
+      <table class="h2h-matrix" id="h2h-table"></table>
+    </div>
+  </div>
+</div>
+<div class="h2h-tooltip" id="h2h-tooltip"></div>
+
+<!-- MATCH LOG -->
+<div class="panel" id="panel-matchlog">
+  <div class="card">
+    <div class="filter-bar">
+      <input type="text" id="match-search" placeholder="Search player…" style="width:200px;">
+      <select id="match-sort">
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+        <option value="ppr-desc">Highest PPR first</option>
+        <option value="margin-desc">Biggest win first</option>
+      </select>
+      <span class="count-badge" id="match-count"></span>
+    </div>
+    <div id="match-list" style="max-height:600px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- LEADERBOARDS -->
+<div class="panel" id="panel-leaderboards">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🏆 Best Season PPR</div>
+      <div id="lb-season-ppr"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ Best Single-Match PPR</div>
+      <div id="lb-match-ppr"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🦵 Best Leg Win %</div>
+      <div id="lb-leg-win"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Best Win Streak (Season)</div>
+      <div id="lb-streak"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 Most Consistent (Avg Match PPR)</div>
+      <div id="lb-consistent"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔥 Most Active (Matches Played)</div>
+      <div id="lb-active"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="panel" id="panel-insights">
+  <div class="grid-2">
+    <div class="insight-card">
+      <div class="insight-title">🏆 Title Race</div>
+      <div id="insight-title-race"></div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">🔥 Hottest Matches of the Season</div>
+      <div id="insight-best-matches"></div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">⚡ Biggest Upsets</div>
+      <div id="insight-upsets"></div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">🗡️ Dominance: Who Owns Who</div>
+      <div id="insight-dominance"></div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">📊 PPR Overperformers</div>
+      <div id="insight-overperf"></div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">😬 Closest Matches</div>
+      <div id="insight-closest"></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<script src="data/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
