@@ -567,18 +567,18 @@ function renderInsights() {
   // Closest matches
 
 
-  // Longest legs
-  $('#insight-longest-legs').innerHTML = (DATA.top_legs || []).slice(0,8).map((l,i) => {
-    const wIsYou = l.winner_id === YOU_ID, loIsYou = l.loser_id === YOU_ID;
-    const wName = DATA.players.find(p=>p.id===l.winner_id)?.name.split(', ')[0] || '?';
-    const loName = DATA.players.find(p=>p.id===l.loser_id)?.name.split(', ')[0] || '?';
+  // Highest turns — best single-leg PPT (points per turn)
+  $('#insight-top-ppt').innerHTML = (DATA.top_ppt || []).slice(0,8).map((l,i) => {
+    const isYou = l.player_id === YOU_ID;
+    const name = DATA.players.find(p=>p.id===l.player_id)?.name.split(', ')[0] || '?';
+    const opp  = DATA.players.find(p=>p.id===l.opponent_id)?.name.split(', ')[0] || '?';
     return `<div class="insight-item">
       <div class="insight-num">${i+1}</div>
       <div class="insight-text">
-        <span class="hl" style="font-size:14px;font-weight:800">${l.darts} darts</span>
-        <span style="color:var(--muted)"> (${l.turns} turns)</span>
-        — <span class="${wIsYou?'hl-blue':'hl'}">${wName}</span>
-        beat <span class="${loIsYou?'hl-blue':''}"\>${loName}</span>
+        <span class="hl" style="font-size:14px;font-weight:800">${l.ppt.toFixed(1)}</span>
+        <span style="color:var(--muted)"> PPT</span>
+        — <span class="${isYou?'hl-blue':'hl'}">${name}</span>
+        vs ${opp}
         · <span style="color:var(--muted)">${l.pretty}</span>
         · <a href="https://recap.dartconnect.com/matches/${l.dc_id}" target="_blank">recap↗</a>
       </div>
