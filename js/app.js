@@ -566,6 +566,41 @@ function renderInsights() {
 
   // Closest matches
 
+
+  // Longest legs
+  $('#insight-longest-legs').innerHTML = (DATA.top_legs || []).slice(0,8).map((l,i) => {
+    const wIsYou = l.winner_id === YOU_ID, loIsYou = l.loser_id === YOU_ID;
+    const wName = DATA.players.find(p=>p.id===l.winner_id)?.name.split(', ')[0] || '?';
+    const loName = DATA.players.find(p=>p.id===l.loser_id)?.name.split(', ')[0] || '?';
+    return `<div class="insight-item">
+      <div class="insight-num">${i+1}</div>
+      <div class="insight-text">
+        <span class="hl" style="font-size:14px;font-weight:800">${l.darts} darts</span>
+        <span style="color:var(--muted)"> (${l.turns} turns)</span>
+        — <span class="${wIsYou?'hl-blue':'hl'}">${wName}</span>
+        beat <span class="${loIsYou?'hl-blue':''}"\>${loName}</span>
+        · <span style="color:var(--muted)">${l.pretty}</span>
+        · <a href="https://recap.dartconnect.com/matches/${l.dc_id}" target="_blank">recap↗</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Checkout efficiency
+  $('#insight-checkout-eff').innerHTML = (DATA.checkout_efficiency || []).slice(0,8).map((s,i) => {
+    const isYou = s.player_id === YOU_ID;
+    const barW = Math.round(s.efficiency);
+    return `<div class="insight-item">
+      <div class="insight-num">${i+1}</div>
+      <div class="insight-text" style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+          <span class="${isYou?'hl-blue':'hl'}">${s.name.split(', ')[0]}</span>
+          <span style="font-weight:800;color:var(--accent)">${s.efficiency}%</span>
+        </div>
+        <div class="bar-wrap" style="margin-top:0"><div class="bar-fill" style="width:${barW}%"></div></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">${s.legs_won} legs won · ${s.opps_missed} in-range misses · ${s.close_missed} close misses (≤40)</div>
+      </div>
+    </div>`;
+  }).join('');
   // Highest checkouts — top 8 individual checkout scores
   $('#insight-checkouts').innerHTML = DATA.top_checkouts.slice(0,8).map((c,i) => {
     const isYou = c.player_id === YOU_ID;
