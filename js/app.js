@@ -565,6 +565,55 @@ function renderInsights() {
   ].join('');
 
   // Closest matches
+
+  // Highest checkouts — top 8 individual checkout scores
+  $('#insight-checkouts').innerHTML = DATA.top_checkouts.slice(0,8).map((c,i) => {
+    const isYou = c.player_id === YOU_ID;
+    const opp = DATA.players.find(p => p.id === c.opponent_id);
+    const oppName = opp ? opp.name.split(', ')[0] : '?';
+    const d = new Date(c.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return `<div class="insight-item">
+      <div class="insight-num">${i+1}</div>
+      <div class="insight-text">
+        <span class="${isYou?'hl-blue':'hl'}" style="font-size:15px;font-weight:800">${c.checkout}</span>
+        — <span class="${isYou?'hl-blue':'hl'}">${DATA.players.find(p=>p.id===c.player_id)?.name.split(', ')[0]}</span>
+        vs ${oppName} · <span style="color:var(--muted)">${d}</span>
+        · <a href="https://recap.dartconnect.com/matches/${c.dc_id}" target="_blank">recap↗</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Comeback wins
+  $('#insight-comebacks').innerHTML = DATA.comebacks.slice(0,6).map((c,i) => {
+    const wIsYou = c.winner_id === YOU_ID, lIsYou = c.loser_id === YOU_ID;
+    return `<div class="insight-item">
+      <div class="insight-num">${i+1}</div>
+      <div class="insight-text">
+        <span class="${wIsYou?'hl-blue':'hl'}">${c.winner_name.split(', ')[0]}</span>
+        came back to beat
+        <span class="${lIsYou?'hl-blue':'hl'}">${c.loser_name.split(', ')[0]}</span>
+        <span style="color:var(--accent)"> ${c.score}</span>
+        · <span style="color:var(--muted)">${c.pretty}</span>
+        · <a href="https://recap.dartconnect.com/matches/${c.dc_id}" target="_blank">recap↗</a>
+      </div>
+    </div>`;
+  }).join('');
+  if (!DATA.comebacks.length) $('#insight-comebacks').innerHTML = '<div class="insight-item"><div class="insight-text" style="color:var(--muted)">No comebacks recorded yet</div></div>';
+
+  // Best checkout average (min 50 checkouts)
+  const coStats = (DATA.checkout_stats || []).filter(s => s.count >= 50).sort((a,b) => b.avg - a.avg);
+  $('#insight-checkout-avg').innerHTML = coStats.slice(0,6).map((s,i) => {
+    const isYou = s.player_id === YOU_ID;
+    return `<div class="insight-item">
+      <div class="insight-num">${i+1}</div>
+      <div class="insight-text">
+        <span class="${isYou?'hl-blue':'hl'}">${s.name.split(', ')[0]}</span>
+        · avg <span class="hl">${s.avg}</span>
+        · high <span style="color:var(--win)">${s.highest}</span>
+        · ${s.count} checkouts
+      </div>
+    </div>`;
+  }).join('');
   $('#insight-closest').innerHTML = DATA.closest_matches.slice(0,5).map((m,i) => {
     const lIsYou = m.l_id === YOU_ID, rIsYou = m.r_id === YOU_ID;
     return `<div class="insight-item">
